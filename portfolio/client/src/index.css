@@ -1,0 +1,82 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Theme colours: "Clean Slate" from tweakcn.com.
+   To use the exact values, press "Code" on tweakcn and paste its :root and .dark blocks here.
+   Keep the variable names the same. */
+:root {
+  --background: #f8fafc;
+  --foreground: #1e293b;
+  --card: #ffffff;
+  --primary: #6366f1;
+  --primary-foreground: #ffffff;
+  --secondary: #e5e7eb;
+  --secondary-foreground: #374151;
+  --muted: #f3f4f6;
+  --muted-foreground: #6b7280;
+  --destructive: #dc2626;
+  --border: #e5e7eb;
+  --input: #d1d5db;
+  --ring: #6366f1;
+  --link: #4f46e5; /* indigo text that stays readable on the background */
+}
+
+.dark {
+  --background: #0f172a;
+  --foreground: #e5e7eb;
+  --card: #1e293b;
+  --primary: #6366f1;
+  --primary-foreground: #ffffff;
+  --secondary: #334155;
+  --secondary-foreground: #e2e8f0;
+  --muted: #233044;
+  --muted-foreground: #94a3b8;
+  --destructive: #f87171;
+  --border: #334155;
+  --input: #475569;
+  --ring: #818cf8;
+  --link: #a5b4fc;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-background font-sans text-foreground antialiased;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+}
+
+/* Small reusable classes so the JSX stays short */
+@layer components {
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-colors
+      focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background
+      disabled:pointer-events-none disabled:opacity-60;
+  }
+  .btn-primary {
+    @apply bg-primary text-primary-foreground hover:opacity-90;
+  }
+  .btn-outline {
+    @apply border border-border bg-card hover:bg-muted;
+  }
+  .btn-danger {
+    @apply border border-border bg-card text-destructive hover:bg-muted;
+  }
+  .input {
+    @apply w-full rounded-md border border-input bg-card px-3 py-2 text-sm placeholder:text-muted-foreground
+      focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring;
+  }
+  .label {
+    @apply mb-1.5 block text-sm font-medium;
+  }
+  .tag {
+    @apply rounded-md bg-secondary px-2 py-0.5 text-xs text-secondary-foreground;
+  }
+}
