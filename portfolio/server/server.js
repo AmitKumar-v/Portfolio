@@ -1,4 +1,4 @@
-// Entry point of the backend. It sets up Express, connects to MongoDB and starts listening.
+
 import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
@@ -12,24 +12,37 @@ import { notFound, errorHandler } from './middleware/errorHandler.js';
 
 const app = express();
 
-// Allow the React app to call this API
-app.use(cors({ origin: process.env.CLIENT_URL || 'http://localhost:5173' }));
-// Read JSON sent in request bodies and put it in req.body
+app.use(cors({
+  origin: process.env.CLIENT_URL || 'http://localhost:5173'
+}));
+
 app.use(express.json());
 
-// Every URL that starts with /api/... is sent to the matching routes file
+app.use(async (req, res, next) => {
+  try {
+    await connectDB();
+    next();
+  } catch (error) {
+    next(error);
+  }
+});
+
 app.use('/api/auth', authRoutes);
 app.use('/api/projects', projectRoutes);
 app.use('/api/messages', messageRoutes);
 app.use('/api/resume', resumeRoutes);
 
-// These two must come last
 app.use(notFound);
 app.use(errorHandler);
 
-const PORT = process.env.PORT || 5000;
+// Vercel uses this exported Express application.
+export default app;
 
-// Start the server only after the database is connected
-connectDB().then(() => {
-  app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
-});
+// Keep normal local development working.
+if (!process.env.VERCEL) {
+  const PORT = process.env.PORT || 5000;
+
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  });
+}
